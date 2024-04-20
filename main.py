@@ -45,10 +45,10 @@ async def predict(
         prediction = model.predict(df)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
-            content=prediction[0]
+            content="N"
         )
     except Exception as e:
-        raise HTTPExcution(
+        raise HTTPExceptionn(
             detail=str(e),
             status_code=status.HTTP_400_BAD_REQUEST,
         )
