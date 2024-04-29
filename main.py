@@ -48,7 +48,7 @@ async def predict(
             content="N"
         )
     except Exception as e:
-        raise HTTPExceptionn(
+        raise HTTPException(
             detail=str(e),
             status_code=status.HTTP_400_BAD_REQUEST,
         )
