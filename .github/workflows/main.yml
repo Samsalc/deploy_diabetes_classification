@@ -26,3 +26,18 @@ jobs:
 
       - name: Docker push to Dockerhub
         run: docker push samsalca/deploy-diabetes-classification:v1
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{secrets.EC2_PRIVATE_KEY }}
+          script: |
+            docker login -u '${{ secrets.DOCKER_USERNAME }}' -p '${{ secrets.DOCKER_PASSWORD }}'
+            if docker ps --all | grep -q diabetes-classification; then
+              docker stop diabetes-classification
+              docker rm diabetes-classification
+            fi
+            docker pull ${{ secrets.DOCKER_USERNAME }}/deploy-diabetes-classification:v1
+            docker run -d --name diabetes-classification -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/deploy-diabetes-classification:v1
